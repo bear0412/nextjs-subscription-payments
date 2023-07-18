@@ -2,6 +2,8 @@ import { Database } from '@/types_db';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 export const createServerSupabaseClient = cache(() =>
   createServerComponentClient<Database>({ cookies })
@@ -65,3 +67,18 @@ export const getActiveProductsWithPrices = async () => {
   }
   return data ?? [];
 };
+
+export const getFirebase = () => {
+  const firebaseConfig = {
+    apiKey: process.env.FIREBASE_APIKEY,
+    authDomain: process.env.FIREBASE_AUTHDOMAIN,
+    projectId: process.env.FIREBASE_PROJECTID,
+    storageBucket: process.env.FIREBASE_STORAGEBUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
+    appId: process.env.FIREBASE_APPID,
+    measurementId: process.env.FIREBASE_MEASUREMENTID,
+  };
+
+  const app = initializeApp(firebaseConfig);
+  return getFirestore(app);
+}
