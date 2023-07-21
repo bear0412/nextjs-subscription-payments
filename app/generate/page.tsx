@@ -68,6 +68,7 @@ export default function Generate() {
             cacheControl: "3600",
             upsert: false,
           });
+        console.log(data)
         if (error) {
           throw error
         }
@@ -181,6 +182,7 @@ export default function Generate() {
             <input
               type="file"
               id="upload-button"
+              accept="image/*"
               style={{ display: "none" }}
               onChange={handleChange}
             />
