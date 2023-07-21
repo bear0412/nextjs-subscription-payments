@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, v1 as uuidv1 } from "uuid";
 import axios from "axios";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { ThreeDots } from "react-loader-spinner";
@@ -60,14 +60,20 @@ export default function Generate() {
         toggleAvatarGenerating();
         setLoading(true)
 
-        const filename = `${uuidv4()}-${image.raw.name}`;
+        const filename = `${uuidv1()}-${image.raw.name}`;
         console.log(filename, image.raw)
         const { data, error } = await supabase.storage
-          .from("ai-gallery")
+          .from("images")
           .upload(filename, image.raw, {
             cacheControl: "3600",
             upsert: false,
           });
+        // const { data, error } = await supabase.storage
+        //   .from("ai-gallery")
+        //   .upload(filename, image.raw, {
+        //     cacheControl: "3600",
+        //     upsert: false,
+        //   });
         console.log(data)
         if (error) {
           throw error
