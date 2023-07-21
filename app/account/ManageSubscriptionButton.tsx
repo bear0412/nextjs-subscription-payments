@@ -7,7 +7,7 @@ import { Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
 interface Props {
-  session: Session;
+  session: Session | null;
 }
 
 export default function ManageSubscriptionButton({ session }: Props) {

@@ -1,81 +1,68 @@
-import Stripe from 'stripe';
-import { stripe } from '@/utils/stripe';
-import {
-  upsertProductRecord,
-  upsertPriceRecord,
-  manageSubscriptionStatusChange
-} from '@/utils/supabase-admin';
-import { headers } from 'next/headers';
+// Webhook response received from The Next Leg
+// {
+//   "createdAt": {
+//       "_nanoseconds": 215000000,
+//       "_seconds": 1678840347
+//   },
+//   "buttons": [
+//       "U1",
+//       "U2",
+//       "U3",
+//       "U4",
+//       "🔄",
+//       "V1",
+//       "V2",
+//       "V3",
+//       "V4"
+//   ],
+//   "imageUrl": "your-image-url",
+//   "buttonMessageId": "OtfxNzfMIKBPVE1aP4u4",
+//   "originatingMessageId": "your-message-id",
+//   "content": "your-original-prompt"
+// }
 
-const relevantEvents = new Set([
-  'product.created',
-  'product.updated',
-  'price.created',
-  'price.updated',
-  'checkout.session.completed',
-  'customer.subscription.created',
-  'customer.subscription.updated',
-  'customer.subscription.deleted'
-]);
+// {
+//   "progress": 100,
+//   "response": {
+//       "createdAt": "2023-07-08T18:59:14.302Z",
+//       "originatingMessageId": "5Vf2LVahPh5w8m7KqVzs",
+//       "ref": "",
+//       "buttons": [
+//           "U1",
+//           "U2",
+//           "U3",
+//           "U4",
+//           ":arrows_counterclockwise:",
+//           "V1",
+//           "V2",
+//           "V3",
+//           "V4"
+//       ],
+//       "imageUrl": "https://cdn.discordapp.com/attachments/1125506214197997629/1127312960436568084/Alikos87_a_anime_cute_very_skinny_dragon_220c94fc-9967-4c12-834e-33ef6702ae4b.png",
+//       "imageUrls": [
+//           "https://cdn.midjourney.com/220c94fc-9967-4c12-834e-33ef6702ae4b/0_0.png",
+//           "https://cdn.midjourney.com/220c94fc-9967-4c12-834e-33ef6702ae4b/0_1.png",
+//           "https://cdn.midjourney.com/220c94fc-9967-4c12-834e-33ef6702ae4b/0_2.png",
+//           "https://cdn.midjourney.com/220c94fc-9967-4c12-834e-33ef6702ae4b/0_3.png"
+//       ],
+//       "responseAt": "2023-07-08T18:59:14.601Z",
+//       "description": "",
+//       "type": "imagine",
+//       "content": "a anime cute very skinny dragon --q 3 --s 300",
+//       "buttonMessageId": "lcSpsjfa08a8NHHxCXMz"
+//   }
+// }
+import { useSupabase } from "@/app/supabase-provider";
 
 export async function POST(req: Request) {
-  const body = await req.text();
-  const sig = headers().get('Stripe-Signature') as string;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  let event: Stripe.Event;
+  const { setGeneratedAvatar } = useSupabase();
+  const { imageUrls, content, originatingMessageId } = req.body as any;
+  console.log("-----------------------", req.body);
+  setGeneratedAvatar({
+    imageUrls,
+    content,
+    originatingMessageId
+  });
 
-  try {
-    if (!sig || !webhookSecret) return;
-    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-  } catch (err: any) {
-    console.log(`❌ Error message: ${err.message}`);
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
-  }
-
-  if (relevantEvents.has(event.type)) {
-    try {
-      switch (event.type) {
-        case 'product.created':
-        case 'product.updated':
-          await upsertProductRecord(event.data.object as Stripe.Product);
-          break;
-        case 'price.created':
-        case 'price.updated':
-          await upsertPriceRecord(event.data.object as Stripe.Price);
-          break;
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
-          const subscription = event.data.object as Stripe.Subscription;
-          await manageSubscriptionStatusChange(
-            subscription.id,
-            subscription.customer as string,
-            event.type === 'customer.subscription.created'
-          );
-          break;
-        case 'checkout.session.completed':
-          const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          if (checkoutSession.mode === 'subscription') {
-            const subscriptionId = checkoutSession.subscription;
-            await manageSubscriptionStatusChange(
-              subscriptionId as string,
-              checkoutSession.customer as string,
-              true
-            );
-          }
-          break;
-        default:
-          throw new Error('Unhandled relevant event!');
-      }
-    } catch (error) {
-      console.log(error);
-      return new Response(
-        'Webhook handler failed. View your nextjs function logs.',
-        {
-          status: 400
-        }
-      );
-    }
-  }
   return new Response(JSON.stringify({ received: true }));
 }

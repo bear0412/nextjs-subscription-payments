@@ -31,6 +31,49 @@ export interface Database {
           }
         ]
       }
+      gallery: {
+        Row: {
+          created_at: string | null
+          id: number
+          image_link: string | null
+          is_public: boolean
+          message_link: string | null
+          param: string | null
+          prompt: string
+          selected: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          image_link?: string | null
+          is_public?: boolean
+          message_link?: string | null
+          param?: string | null
+          prompt: string
+          selected?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          image_link?: string | null
+          is_public?: boolean
+          message_link?: string | null
+          param?: string | null
+          prompt?: string
+          selected?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       prices: {
         Row: {
           active: boolean | null
@@ -179,6 +222,7 @@ export interface Database {
           avatar_url: string | null
           billing_address: Json | null
           full_name: string | null
+          generate_count: number
           id: string
           payment_method: Json | null
         }
@@ -186,6 +230,7 @@ export interface Database {
           avatar_url?: string | null
           billing_address?: Json | null
           full_name?: string | null
+          generate_count?: number
           id: string
           payment_method?: Json | null
         }
@@ -193,6 +238,7 @@ export interface Database {
           avatar_url?: string | null
           billing_address?: Json | null
           full_name?: string | null
+          generate_count?: number
           id?: string
           payment_method?: Json | null
         }
@@ -210,7 +256,14 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_active_subscription_unit_amount: {
+        Args: {
+          user_id: string
+        }
+        Returns: {
+          unit_amount: number
+        }[]
+      }
     }
     Enums: {
       pricing_plan_interval: "day" | "week" | "month" | "year"

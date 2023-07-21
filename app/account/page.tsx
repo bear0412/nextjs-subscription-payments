@@ -1,3 +1,4 @@
+// "use client";
 import ManageSubscriptionButton from './ManageSubscriptionButton';
 import {
   getSession,
@@ -11,20 +12,30 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, /* useEffect, useState */ } from 'react';
+import { Session, Users, SubscriptionWithProduct } from "@/config/type";
 
 export default async function Account() {
+  // const [session, setSession] = useState<Session | null>(null)
+  // const [userDetails, setUserDetails] = useState<Users | null>(null)
+  // const [subscription, setSubscription] = useState<SubscriptionWithProduct | null>(null)
+
   const [session, userDetails, subscription] = await Promise.all([
     getSession(),
     getUserDetails(),
     getSubscription()
   ]);
 
-  const user = session?.user;
-
   if (!session) {
     return redirect('/signin');
   }
+  // useEffect(() => {
+  //   (async () => {
+  //     setSession(session)
+  //     setUserDetails(userDetails)
+  //     setSubscription(subscription)
+  //   })()
+  // }, [])
 
   const subscriptionPrice =
     subscription &&
@@ -45,18 +56,6 @@ export default async function Account() {
       .from('users')
       .update({ full_name: newName })
       .eq('id', user?.id);
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/account');
-  };
-
-  const updateEmail = async (formData: FormData) => {
-    'use server';
-
-    const newEmail = formData.get('email') as string;
-    const supabase = createServerActionClient<Database>({ cookies });
-    const { error } = await supabase.auth.updateUser({ email: newEmail });
     if (error) {
       console.log(error);
     }
@@ -103,7 +102,7 @@ export default async function Account() {
                 variant="slim"
                 type="submit"
                 form="nameForm"
-                disabled={true}
+              // disabled={true}
               >
                 {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Update Name
@@ -119,39 +118,6 @@ export default async function Account() {
                 className="w-1/2 p-3 rounded-md bg-zinc-800"
                 defaultValue={userDetails?.full_name ?? ''}
                 placeholder="Your name"
-                maxLength={64}
-              />
-            </form>
-          </div>
-        </Card>
-        <Card
-          title="Your Email"
-          description="Please enter the email address you want to use to login."
-          footer={
-            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">
-                We will email you to verify the change.
-              </p>
-              <Button
-                variant="slim"
-                type="submit"
-                form="emailForm"
-                disabled={true}
-              >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Update Email
-              </Button>
-            </div>
-          }
-        >
-          <div className="mt-8 mb-4 text-xl font-semibold">
-            <form id="emailForm" action={updateEmail}>
-              <input
-                type="text"
-                name="email"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
-                defaultValue={user ? user.email : ''}
-                placeholder="Your email"
                 maxLength={64}
               />
             </form>

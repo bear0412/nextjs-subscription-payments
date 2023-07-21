@@ -8,19 +8,7 @@ import { Session, User } from '@supabase/supabase-js';
 import cn from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
-type Subscription = Database['public']['Tables']['subscriptions']['Row'];
-type Product = Database['public']['Tables']['products']['Row'];
-type Price = Database['public']['Tables']['prices']['Row'];
-interface ProductWithPrices extends Product {
-  prices: Price[];
-}
-interface PriceWithProduct extends Price {
-  products: Product | null;
-}
-interface SubscriptionWithProduct extends Subscription {
-  prices: PriceWithProduct | null;
-}
+import { Price, ProductWithPrices, SubscriptionWithProduct } from "@/config/type";
 
 interface Props {
   session: Session | null;
@@ -90,7 +78,7 @@ export default function Pricing({
             .
           </p>
         </div>
-        <LogoCloud />
+        {/* <LogoCloud /> */}
       </section>
     );
 
@@ -147,7 +135,7 @@ export default function Pricing({
                         className="block w-full py-2 mt-12 text-sm font-semibold text-center text-white rounded-md hover:bg-zinc-900 "
                       >
                         {products[0].name ===
-                        subscription?.prices?.products?.name
+                          subscription?.prices?.products?.name
                           ? 'Manage'
                           : 'Subscribe'}
                       </Button>
@@ -157,7 +145,7 @@ export default function Pricing({
               })}
             </div>
           </div>
-          <LogoCloud />
+          {/* <LogoCloud /> */}
         </div>
       </section>
     );
@@ -178,11 +166,10 @@ export default function Pricing({
               <button
                 onClick={() => setBillingInterval('month')}
                 type="button"
-                className={`${
-                  billingInterval === 'month'
-                    ? 'relative w-1/2 bg-zinc-700 border-zinc-800 shadow-sm text-white'
-                    : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
-                } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
+                className={`${billingInterval === 'month'
+                  ? 'relative w-1/2 bg-zinc-700 border-zinc-800 shadow-sm text-white'
+                  : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
+                  } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
               >
                 Monthly billing
               </button>
@@ -191,11 +178,10 @@ export default function Pricing({
               <button
                 onClick={() => setBillingInterval('year')}
                 type="button"
-                className={`${
-                  billingInterval === 'year'
-                    ? 'relative w-1/2 bg-zinc-700 border-zinc-800 shadow-sm text-white'
-                    : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
-                } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
+                className={`${billingInterval === 'year'
+                  ? 'relative w-1/2 bg-zinc-700 border-zinc-800 shadow-sm text-white'
+                  : 'ml-0.5 relative w-1/2 border border-transparent text-zinc-400'
+                  } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8`}
               >
                 Yearly billing
               </button>
@@ -253,13 +239,13 @@ export default function Pricing({
             );
           })}
         </div>
-        <LogoCloud />
+        {/* <LogoCloud /> */}
       </div>
     </section>
   );
 }
 
-function LogoCloud() {
+/* function LogoCloud() {
   return (
     <div>
       <p className="mt-24 text-xs uppercase text-zinc-400 text-center font-bold tracking-[0.3em]">
@@ -314,4 +300,4 @@ function LogoCloud() {
       </div>
     </div>
   );
-}
+} */

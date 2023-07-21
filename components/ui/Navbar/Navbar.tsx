@@ -28,9 +28,17 @@ export default async function Navbar() {
                 Pricing
               </Link>
               {user && (
-                <Link href="/account" className={s.link}>
-                  Account
-                </Link>
+                <>
+                  <Link href="/account" className={s.link}>
+                    Account
+                  </Link>
+                  <Link href="/generate" className={s.link}>
+                    Generate
+                  </Link>
+                  <Link href="/gallery" className={s.link}>
+                    Gallery
+                  </Link>
+                </>
               )}
             </nav>
           </div>

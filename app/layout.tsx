@@ -3,14 +3,15 @@ import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren } from 'react';
 import 'styles/main.css';
+import AuthProvider from './auth-provider';
 
 const meta = {
-  title: 'Next.js Subscription Starter',
-  description: 'Brought to you by Vercel, Stripe, and Supabase.',
+  title: 'Eden',
+  description: 'Eden AI',
   cardImage: '/og.png',
   robots: 'follow, index',
   favicon: '/favicon.ico',
-  url: 'https://subscription-starter.vercel.app',
+  url: 'https://eden-ai.vercel.app',
   type: 'website'
 };
 
@@ -47,17 +48,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black loading">
-        <SupabaseProvider>
-          {/* @ts-expect-error */}
-          <Navbar />
-          <main
-            id="skip"
-            className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"
-          >
-            {children}
-          </main>
-          <Footer />
-        </SupabaseProvider>
+        <AuthProvider>
+          <SupabaseProvider>
+            {/* @ts-expect-error */}
+            <Navbar />
+            <main
+              id="skip"
+              className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"
+            >
+              {children}
+            </main>
+            <Footer />
+          </SupabaseProvider>
+        </AuthProvider>
       </body>
     </html>
   );
