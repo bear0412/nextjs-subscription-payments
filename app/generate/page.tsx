@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { v4 as uuidv4, v1 as uuidv1 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { ThreeDots } from "react-loader-spinner";
@@ -13,7 +13,7 @@ import { Swiper as SwiperProps } from "swiper";
 import { redirect } from 'next/navigation';
 
 import { Database } from '@/types_db';
-import { NEXTLOG_TOKEN, NEXTLOG_URL } from "@/config/constant";
+import { NEXTLOG_TOKEN, NEXTLOG_URL, SUPABASE_URL } from "@/config/constant";
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
@@ -60,27 +60,21 @@ export default function Generate() {
         toggleAvatarGenerating();
         setLoading(true)
 
-        const filename = `${uuidv1()}-${image.raw.name}`;
-        console.log(filename, image.raw)
+        const filename = `${uuidv4()}-${image.raw.name}`;
+
         const { data, error } = await supabase.storage
-          .from("images")
+          .from("ai-gallery")
           .upload(filename, image.raw, {
             cacheControl: "3600",
             upsert: false,
           });
-        // const { data, error } = await supabase.storage
-        //   .from("ai-gallery")
-        //   .upload(filename, image.raw, {
-        //     cacheControl: "3600",
-        //     upsert: false,
-        //   });
-        console.log(data)
+
         if (error) {
           throw error
         }
-        console.log(data.path)
+
         if (data) {
-          const image_link = data.path;
+          const image_link = `${SUPABASE_URL}/storage/v1/object/ai-gallery/${data.path}`;
           setImageUrl(image_link);
           const { error } = await supabase.from("gallery").insert({
             image_link: image_link,
