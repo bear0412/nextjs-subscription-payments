@@ -74,7 +74,7 @@ export default function Generate() {
         }
 
         if (data) {
-          const image_link = `${SUPABASE_URL}/storage/v1/object/ai-gallery/${data.path}`;
+          const image_link = `${SUPABASE_URL}/storage/v1/object/public/ai-gallery/${data.path}`;
           setImageUrl(image_link);
           const { error } = await supabase.from("gallery").insert({
             image_link: image_link,
