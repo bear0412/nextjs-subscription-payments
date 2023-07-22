@@ -78,7 +78,6 @@ export default function Generate() {
           setImageUrl(image_link);
           const { error } = await supabase.from("gallery").insert({
             image_link: image_link,
-            prompt: prompt,
             user_id: userId
           })
           if (error) {
