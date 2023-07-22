@@ -39,7 +39,7 @@ export interface Database {
           is_public: boolean
           message_link: string | null
           param: string | null
-          prompt: string
+          prompt: string | null
           selected: string | null
           user_id: string
         }
@@ -50,7 +50,7 @@ export interface Database {
           is_public?: boolean
           message_link?: string | null
           param?: string | null
-          prompt: string
+          prompt?: string | null
           selected?: string | null
           user_id: string
         }
@@ -61,7 +61,7 @@ export interface Database {
           is_public?: boolean
           message_link?: string | null
           param?: string | null
-          prompt?: string
+          prompt?: string | null
           selected?: string | null
           user_id?: string
         }
