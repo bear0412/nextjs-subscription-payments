@@ -44,7 +44,7 @@ export default function Generate() {
 
   const supabase = createClientComponentClient<Database>()
 
-  Pusher.logToConsole = true;
+  // Pusher.logToConsole = true;
 
   const pusher = new Pusher('18e7661daefa46639f78', {
     cluster: 'eu'

@@ -5,7 +5,7 @@ import { NEXTLOG_TOKEN, NEXTLOG_URL } from "@/config/constant";
 import type { Database } from 'types_db';
 
 export async function POST(req: Request) {
-  const { cmd, imageUrl, prompt, generateCount } = req.body as any;
+  const { cmd, imageUrl, prompt, generateCount } = await req.json() as any;
   const supabaseAdmin = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL || '',
     process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -25,6 +25,6 @@ export async function POST(req: Request) {
   );
   await supabaseAdmin.from('gallery').update({ origin_message: res.messageId }).eq('image_link', imageUrl)
 
-  console.log("success", JSON.stringify(res, null, 2), generateCount - 1);
+  console.log("backend success", JSON.stringify({ headers, msg: `${imageUrl} ${prompt}`, res }, null, 2), generateCount);
   return new Response(JSON.stringify({ received: true }));
 }

@@ -76,8 +76,8 @@ interface NextlegRes<T = any, D = any> {
 import Pusher from "pusher";
 
 export async function POST(req: Request) {
-  const body = await req.text()
-  console.log(body, req.body)
+  const body = await req.json()
+  // console.log(body, req.body)
 
   const pusher = new Pusher({
     appId: "1641544",
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
     useTLS: true
   });
 
-  pusher.trigger("eden-ai", "generatedAvatar", { origin: req.body, body });
+  pusher.trigger("eden-ai", "generatedAvatar", body);
   // console.log("called api/webhooks", req.body)
   // const { imageUrls, content, originatingMessageId } = req.body as any;
   // const NextlegReqConfig = {
