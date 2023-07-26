@@ -11,9 +11,10 @@ import Toggle from '@/components/ui/Toggle';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperProps } from "swiper";
 import { redirect } from 'next/navigation';
+import Pusher from 'pusher-js';
 
 import { Database } from '@/types_db';
-import { NEXTLOG_TOKEN, NEXTLOG_URL, SUPABASE_URL } from "@/config/constant";
+import { SUPABASE_URL } from "@/config/constant";
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
@@ -42,6 +43,17 @@ export default function Generate() {
   const { avatarGenerating, toggleAvatarGenerating, generatedAvatar } = useSupabase();
 
   const supabase = createClientComponentClient<Database>()
+
+  Pusher.logToConsole = true;
+
+  const pusher = new Pusher('18e7661daefa46639f78', {
+    cluster: 'eu'
+  });
+
+  const channel = pusher.subscribe('eden-ai');
+  channel.bind('generatedAvatar', (data: any) => {
+    alert(JSON.stringify(data, null, 2));
+  });
 
   const handleChange = async (e: any) => {
     if (e.target.files.length) {
@@ -87,34 +99,20 @@ export default function Generate() {
     }
   };
 
-  // const handleUpload = async (e: any) => {
-  //   e.preventDefault();
-  //   if (image && !!image.raw && !!image.preview) {
-  //   } else {
-  //     alert("Select Image first")
-  //   }
-  // };
-
   const handleSubmit = async () => {
     if (generateCount > 0) {
       try {
         setLoading(true);
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${NEXTLOG_TOKEN}`,
-        };
-        const { data: res } = await axios.post(
-          `${NEXTLOG_URL}`,
+        await axios.post(
+          "/api/generate-avatar",
           {
             cmd: "imagine",
-            msg: `${imageUrl} ${prompt}`,
-          },
-          { headers }
-        );
-
-        await supabase.from('users').update({ generate_count: generateCount - 1 }).eq('id', userId)
+            imageUrl,
+            prompt,
+            generateCount
+          }
+        )
         setGenerateCount(generateCount - 1)
-        console.log("success", JSON.stringify(res, null, 2), generateCount - 1);
       } catch (e: any) {
         console.log("error", e.message);
       } finally {
@@ -143,27 +141,6 @@ export default function Generate() {
       {!avatarGenerating ?
         <>
           <div className="flex flex-col	justify-between	col-span-full mt-2 w-[300px]">
-            {/* <form onSubmit={handleUpload}>
-              <input type="file" name="image" onChange={handleFileSelected} />
-              <button type="submit">Upload image</button>
-            </form>
-            {!imageUrl && (
-              <button
-                onClick={handleSubmit}
-                className="flex justify-center rounded-lg border border-dashed border-gray-900/25 w-full h-full px-auto pt-32 bg-gray-400"
-              >
-                Upload file
-              </button>
-            )}
-            {imageUrl && (
-              <>
-                <button className="absolute text-black">x</button>
-                <img
-                  src={imageUrl}
-                  className="flex justify-center rounded-lg border border-dashed border-gray-900/25 w-full h-full"
-                />
-              </>
-            )} */}
             <label htmlFor="upload-button">
               {image && image.preview ? (
                 <img src={image.preview} alt="dummy" width="300" height="300" />
@@ -184,13 +161,6 @@ export default function Generate() {
               style={{ display: "none" }}
               onChange={handleChange}
             />
-            <br />
-            {/* <button
-              onClick={handleUpload}
-              className="flex justify-center rounded-lg border border-dashed border-gray-900/25 w-full py-1 px-auto  bg-gray-400"
-            >
-              {loading ? "Uploading..." : "Upload"}
-            </button> */}
           </div>
           {/* Text Prompt */}
           <div className="w-full mx-auto px-20">

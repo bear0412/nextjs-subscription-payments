@@ -38,6 +38,7 @@ export interface Database {
           image_link: string | null
           is_public: boolean
           message_link: string | null
+          origin_message: string | null
           param: string | null
           prompt: string | null
           selected: string | null
@@ -49,6 +50,7 @@ export interface Database {
           image_link?: string | null
           is_public?: boolean
           message_link?: string | null
+          origin_message?: string | null
           param?: string | null
           prompt?: string | null
           selected?: string | null
@@ -60,6 +62,7 @@ export interface Database {
           image_link?: string | null
           is_public?: boolean
           message_link?: string | null
+          origin_message?: string | null
           param?: string | null
           prompt?: string | null
           selected?: string | null

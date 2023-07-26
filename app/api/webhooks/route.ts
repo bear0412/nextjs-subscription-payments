@@ -73,28 +73,39 @@ interface NextlegRes<T = any, D = any> {
   }
 }
 
+import Pusher from "pusher";
+
 export async function POST(req: Request) {
   const body = await req.text()
-  console.log(body)
+  console.log(body, req.body)
+
+  const pusher = new Pusher({
+    appId: "1641544",
+    key: "18e7661daefa46639f78",
+    secret: "acf3548068f6d3758b66",
+    cluster: "eu",
+    useTLS: true
+  });
+
+  pusher.trigger("eden-ai", "generatedAvatar", { origin: req.body, body });
   // console.log("called api/webhooks", req.body)
-  const { imageUrls, content, originatingMessageId } = req.body as any;
-  const NextlegReqConfig = {
-    method: "get",
-    url: `https://api.thenextleg.io/v2/message/${originatingMessageId}`,
-    headers: {
-      'Authorization': `Bearer ${NEXTLOG_TOKEN}`,
-      'Content-Type': 'application/json'
-    },
-  }
-  const response = await axios<any, NextlegRes>(NextlegReqConfig)
-  console.log("-----------------------", response.response);
-  const { setGeneratedAvatar } = useSupabase();
+  // const { imageUrls, content, originatingMessageId } = req.body as any;
+  // const NextlegReqConfig = {
+  //   method: "get",
+  //   url: `https://api.thenextleg.io/v2/message/${originatingMessageId || "GoNKsRq5Qp2mfqoPynTk"}`,
+  //   headers: {
+  //     'Authorization': `Bearer ${NEXTLOG_TOKEN}`,
+  //     'Content-Type': 'application/json'
+  //   },
+  // }
+  // const response = await axios<any, NextlegRes>(NextlegReqConfig)
+  // console.log("-----------------------", response.response);
   // setGeneratedAvatar({
   //   imageUrls,
   //   content,
   //   originatingMessageId
   // });
-  setGeneratedAvatar({ ...response.response });
+  // setGeneratedAvatar({ ...response.response });
 
   return new Response(JSON.stringify({ received: true }));
 }
