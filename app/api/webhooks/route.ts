@@ -53,16 +53,48 @@
 //   }
 // }
 import { useSupabase } from "@/app/supabase-provider";
+import { NEXTLOG_TOKEN } from "@/config/constant";
+import axios from "axios";
+
+interface NextlegRes<T = any, D = any> {
+  "progress": number,
+  "response": {
+    "createdAt": Date,
+    "originatingMessageId": string,
+    "ref": "",
+    "buttons": string[],
+    "imageUrl": string,
+    "imageUrls": string[],
+    "responseAt": Date,
+    "description": string,
+    "type": string,
+    "content": string,
+    "buttonMessageId": string
+  }
+}
 
 export async function POST(req: Request) {
-  const { setGeneratedAvatar } = useSupabase();
+  const body = await req.text()
+  console.log(body)
+  // console.log("called api/webhooks", req.body)
   const { imageUrls, content, originatingMessageId } = req.body as any;
-  console.log("-----------------------", req.body);
-  setGeneratedAvatar({
-    imageUrls,
-    content,
-    originatingMessageId
-  });
+  const NextlegReqConfig = {
+    method: "get",
+    url: `https://api.thenextleg.io/v2/message/${originatingMessageId}`,
+    headers: {
+      'Authorization': `Bearer ${NEXTLOG_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+  }
+  const response = await axios<any, NextlegRes>(NextlegReqConfig)
+  console.log("-----------------------", response.response);
+  const { setGeneratedAvatar } = useSupabase();
+  // setGeneratedAvatar({
+  //   imageUrls,
+  //   content,
+  //   originatingMessageId
+  // });
+  setGeneratedAvatar({ ...response.response });
 
   return new Response(JSON.stringify({ received: true }));
 }

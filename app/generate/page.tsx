@@ -34,7 +34,7 @@ export default function Generate() {
 
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false)
+
   const [imageUrl, setImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [image, setImage] = useState<Image | null>(null);
@@ -43,28 +43,21 @@ export default function Generate() {
 
   const supabase = createClientComponentClient<Database>()
 
-  const handleChange = (e: any) => {
+  const handleChange = async (e: any) => {
     if (e.target.files.length) {
+      const uploadFile = e.target.files[0]
       setImage({
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0]
+        preview: URL.createObjectURL(uploadFile),
+        raw: uploadFile
       });
-      console.log(URL.createObjectURL(e.target.files[0]))
-    }
-  };
-
-  const handleUpload = async (e: any) => {
-    e.preventDefault();
-    if (image && !!image.raw && !!image.preview) {
       try {
         toggleAvatarGenerating();
         setLoading(true)
 
-        const filename = `${uuidv4()}-${image.raw.name}`;
-
+        const filename = `${uuidv4()}-${uploadFile.name}`;
         const { data, error } = await supabase.storage
           .from("ai-gallery")
-          .upload(filename, image.raw, {
+          .upload(filename, uploadFile, {
             cacheControl: "3600",
             upsert: false,
           });
@@ -74,10 +67,10 @@ export default function Generate() {
         }
 
         if (data) {
-          const image_link = `${SUPABASE_URL}/storage/v1/object/public/ai-gallery/${data.path}`;
-          setImageUrl(image_link);
+          const imageLink = `${SUPABASE_URL}/storage/v1/object/public/ai-gallery/${data.path}`;
+          setImageUrl(imageLink);
           const { error } = await supabase.from("gallery").insert({
-            image_link: image_link,
+            image_link: imageLink,
             user_id: userId
           })
           if (error) {
@@ -91,15 +84,21 @@ export default function Generate() {
         setLoading(false)
         toggleAvatarGenerating();
       }
-    } else {
-      alert("Select Image first")
     }
   };
+
+  // const handleUpload = async (e: any) => {
+  //   e.preventDefault();
+  //   if (image && !!image.raw && !!image.preview) {
+  //   } else {
+  //     alert("Select Image first")
+  //   }
+  // };
 
   const handleSubmit = async () => {
     if (generateCount > 0) {
       try {
-        setSubmitLoading(true);
+        setLoading(true);
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${NEXTLOG_TOKEN}`,
@@ -119,7 +118,7 @@ export default function Generate() {
       } catch (e: any) {
         console.log("error", e.message);
       } finally {
-        setSubmitLoading(false);
+        setLoading(false);
       }
     }
   }
@@ -186,12 +185,12 @@ export default function Generate() {
               onChange={handleChange}
             />
             <br />
-            <button
+            {/* <button
               onClick={handleUpload}
               className="flex justify-center rounded-lg border border-dashed border-gray-900/25 w-full py-1 px-auto  bg-gray-400"
             >
               {loading ? "Uploading..." : "Upload"}
-            </button>
+            </button> */}
           </div>
           {/* Text Prompt */}
           <div className="w-full mx-auto px-20">
@@ -212,8 +211,9 @@ export default function Generate() {
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   onClick={handleSubmit}
+                  disabled={loading}
                 >
-                  {submitLoading ? "Submitting..." : "Submit"}
+                  {loading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </div>
@@ -228,7 +228,7 @@ export default function Generate() {
           wrapperStyle={{}}
           visible={true}
         />}
-
+      <>{console.log(generatedAvatar)}</>
       {generatedAvatar?.imageUrls.length && generatedAvatar?.originatingMessageId && generatedAvatar?.content && (
         <>
           <h1 className="text-4xl py-8">These are your images!</h1>

@@ -53,7 +53,12 @@ export default function AuthProvider({
       data: { subscription }
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       switch (event) {
+        case "INITIAL_SESSION":
+          console.log("INITIAL_SESSION")
+        case "TOKEN_REFRESHED":
+          console.log("TOKEN_REFRESHED")
         case "SIGNED_IN":
+          console.log("SIGNED_IN")
           if (session) {
             setSession(session)
             const { user: { id: authUserId } } = session
@@ -69,17 +74,21 @@ export default function AuthProvider({
           }
           break;
         case "SIGNED_OUT":
+          console.log("SIGNED_OUT")
           setUserId("")
           setSession(null)
           break;
         case "PASSWORD_RECOVERY":
+          console.log("PASSWORD_RECOVERY")
           setUserId("")
           setSession(null)
           break;
-        case "INITIAL_SESSION":
         case "MFA_CHALLENGE_VERIFIED":
-        case "TOKEN_REFRESHED":
+          console.log("MFA_CHALLENGE_VERIFIED")
+          break;
         case "USER_UPDATED":
+          console.log("USER_UPDATED")
+          break;
 
         default:
           break;
