@@ -12,15 +12,16 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperProps } from "swiper";
 import { redirect } from 'next/navigation';
 import Pusher from 'pusher-js';
+import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 
 import { Database } from '@/types_db';
-import { SUPABASE_URL } from "@/config/constant";
+import { PUSHER_CHANNEL, PUSHER_CLUSTER, PUSHER_EVENT, PUSHER_SECRET, SUPABASE_URL } from "@/config/constant";
 import { NextlegResponse } from "@/config/type"
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
+import './styles.css';
 
 interface Image {
   preview: string;
@@ -48,12 +49,12 @@ export default function Generate() {
 
   // Pusher.logToConsole = true;
 
-  const pusher = new Pusher('18e7661daefa46639f78', {
-    cluster: 'eu'
+  const pusher = new Pusher(`${PUSHER_SECRET}`, {
+    cluster: `${PUSHER_CLUSTER}`
   });
 
-  const channel = pusher.subscribe('eden-ai');
-  channel.bind('generatedAvatar', (data: NextlegResponse) => {
+  const channel = pusher.subscribe(`${PUSHER_CHANNEL}`);
+  channel.bind(`${PUSHER_EVENT}`, (data: NextlegResponse) => {
     console.log(JSON.stringify(data, null, 2));
     if (data.originatingMessageId === msgId) {
       alert("done!");

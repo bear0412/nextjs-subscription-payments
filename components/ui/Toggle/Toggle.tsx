@@ -20,7 +20,7 @@ const Toggle = (props: Props) => {
 
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center overflow-hidden">
       <div className="flex">
         <label className="inline-flex relative items-center mr-5 cursor-pointer">
           <input

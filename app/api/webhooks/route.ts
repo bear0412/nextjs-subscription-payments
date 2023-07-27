@@ -52,38 +52,17 @@
 //       "buttonMessageId": "lcSpsjfa08a8NHHxCXMz"
 //   }
 // }
-import { useSupabase } from "@/app/supabase-provider";
-import { NEXTLOG_TOKEN } from "@/config/constant";
-import axios from "axios";
 
-interface NextlegRes<T = any, D = any> {
-  "progress": number,
-  "response": {
-    "createdAt": Date,
-    "originatingMessageId": string,
-    "ref": "",
-    "buttons": string[],
-    "imageUrl": string,
-    "imageUrls": string[],
-    "responseAt": Date,
-    "description": string,
-    "type": string,
-    "content": string,
-    "buttonMessageId": string
-  }
-}
-
+import { PUSHER_APPID, PUSHER_CLUSTER, PUSHER_KEY, PUSHER_SECRET } from "@/config/constant";
 import Pusher from "pusher";
 
 export async function POST(req: Request) {
   const body = await req.json()
-  // console.log(body, req.body)
-
   const pusher = new Pusher({
-    appId: "1641544",
-    key: "18e7661daefa46639f78",
-    secret: "acf3548068f6d3758b66",
-    cluster: "eu",
+    appId: `${PUSHER_APPID}`,
+    key: `${PUSHER_KEY}`,
+    secret: `${PUSHER_SECRET}`,
+    cluster: `${PUSHER_CLUSTER}`,
     useTLS: true
   });
 
