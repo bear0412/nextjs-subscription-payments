@@ -5,6 +5,7 @@ import { Session as SessionType } from "@supabase/gotrue-js/src/lib/types"
 export declare type SetValue<T> = Dispatch<SetStateAction<T>>;
 
 export declare type NextlegResponse = {
+  imageUrl: any;
   imageUrls: string[],
   originatingMessageId: string,
   content: string,

@@ -37,7 +37,7 @@ export interface Database {
           id: number
           image_link: string | null
           is_public: boolean
-          message_link: string | null
+          one_image: string | null
           origin_message: string | null
           param: string | null
           prompt: string | null
@@ -49,7 +49,7 @@ export interface Database {
           id?: number
           image_link?: string | null
           is_public?: boolean
-          message_link?: string | null
+          one_image?: string | null
           origin_message?: string | null
           param?: string | null
           prompt?: string | null
@@ -61,7 +61,7 @@ export interface Database {
           id?: number
           image_link?: string | null
           is_public?: boolean
-          message_link?: string | null
+          one_image?: string | null
           origin_message?: string | null
           param?: string | null
           prompt?: string | null

@@ -90,13 +90,13 @@ export default function Generate() {
         if (data) {
           const imageLink = `${SUPABASE_URL}/storage/v1/object/public/ai-gallery/${data.path}`;
           setImageUrl(imageLink);
-          const { error } = await supabase.from("gallery").insert({
-            image_link: imageLink,
-            user_id: userId
-          })
-          if (error) {
-            throw error
-          }
+          // const { error } = await supabase.from("gallery").insert({
+          //   image_link: imageLink,
+          //   user_id: userId
+          // })
+          // if (error) {
+          //   throw error
+          // }
         }
       } catch (error) {
         alert('Error loading user data!')
@@ -119,7 +119,7 @@ export default function Generate() {
             cmd: "imagine",
             imageUrl,
             prompt,
-            generateCount
+            generateCount,
           }
         )
         setGenerateCount(generateCount - 1)
@@ -141,7 +141,7 @@ export default function Generate() {
       } = await supabase.auth.getUser();
       if (user && generatedAvatar && thumbsSwiper) {
         const { error } = await supabase.from("gallery").update({
-          message_link: generatedAvatar.originatingMessageId,
+          one_image: generatedAvatar.imageUrl,
           param: '',
           selected: generatedAvatar.imageUrls[activeInx],
           is_public: isPublic,
