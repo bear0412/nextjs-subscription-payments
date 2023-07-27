@@ -37,9 +37,11 @@ export default function Generate() {
 
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false)
   const [msgId, setMsgId] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(false);
+  const [activeInx, setActiveInx] = useState(0)
   const [image, setImage] = useState<Image | null>(null);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperProps | undefined>();
   const [generatedAvatar, setGeneratedAvatar] = useState<NextlegResponse | null>(null);
@@ -53,10 +55,10 @@ export default function Generate() {
 
   const channel = pusher.subscribe(PUSHER_CHANNEL || "");
   channel.bind(PUSHER_EVENT || "", (data: NextlegResponse) => {
-    console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(data, null, 2), msgId);
     if (data.originatingMessageId === msgId) {
       alert("done!");
-      console.log(JSON.stringify(data, null, 2));
+      // console.log(JSON.stringify(data, null, 2));
       setGeneratedAvatar(data);
       setLoading(false)
     }
@@ -132,16 +134,23 @@ export default function Generate() {
   }
 
   const saveGeneratedAvatar = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user && generatedAvatar && thumbsSwiper) {
-      const { error } = await supabase.from("gallery").update({
-        message_link: generatedAvatar.originatingMessageId,
-        param: '',
-        selected: generatedAvatar.imageUrls[thumbsSwiper.activeIndex],
-        is_public: isPublic,
-      }).eq("image_link", imageUrl).eq("user_id", user.id)
+    try {
+      setSaveLoading(true)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user && generatedAvatar && thumbsSwiper) {
+        const { error } = await supabase.from("gallery").update({
+          message_link: generatedAvatar.originatingMessageId,
+          param: '',
+          selected: generatedAvatar.imageUrls[activeInx],
+          is_public: isPublic,
+        }).eq("origin_message", msgId).eq("user_id", userId)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setSaveLoading(false)
     }
   }
 
@@ -215,6 +224,7 @@ export default function Generate() {
           <div className="">
             <Swiper
               loop={true}
+              onActiveIndexChange={(e) => setActiveInx(e.activeIndex)}
               spaceBetween={10}
               navigation={true}
               thumbs={{ swiper: thumbsSwiper }}
@@ -246,12 +256,13 @@ export default function Generate() {
                 labels={['Private', 'Public']}
                 onChange={setIsPublic}
               />
-              <Button
-                variant="slim"
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                disabled={saveLoading}
                 onClick={saveGeneratedAvatar}
               >
-                Save
-              </Button>
+                {saveLoading ? "Saving..." : "Save"}
+              </button>
             </div>
           </div>
         </>

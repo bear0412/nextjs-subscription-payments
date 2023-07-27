@@ -8,12 +8,11 @@ interface Props extends Omit<InputHTMLAttributes<any>, 'onChange'> {
 const Toggle = (props: Props) => {
   const [checked, setChecked] = useState<boolean>(false);
   const { labels, children, onChange, ...rest } = props;
-  let enabled: boolean = false;
   const handleOnChange = () => {
     if (onChange) {
-      enabled != enabled;
-      setChecked(enabled);
-      onChange(enabled);
+      console.log(checked,)
+      onChange(!checked);
+      setChecked(!checked);
     }
     return null;
   };
@@ -26,14 +25,14 @@ const Toggle = (props: Props) => {
           <input
             type="checkbox"
             className="sr-only peer"
-            checked={enabled}
+            checked={checked}
             readOnly
           />
           <div
             onClick={(e) => {
               handleOnChange()
             }}
-            className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-green-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"
+            className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-blue-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"
           ></div>
           <span className="ml-2 text-sm font-medium text-gray-900">
             {checked ? labels[0] : labels[1]}
