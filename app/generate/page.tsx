@@ -15,6 +15,7 @@ import Pusher from 'pusher-js';
 
 import { Database } from '@/types_db';
 import { SUPABASE_URL } from "@/config/constant";
+import { NextlegResponse } from "@/config/type"
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
@@ -35,12 +36,13 @@ export default function Generate() {
 
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [msgId, setMsgId] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [image, setImage] = useState<Image | null>(null);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperProps | undefined>();
-  const { avatarGenerating, toggleAvatarGenerating, generatedAvatar } = useSupabase();
+  const [generatedAvatar, setGeneratedAvatar] = useState<NextlegResponse | null>(null);
+  const { avatarGenerating, toggleAvatarGenerating } = useSupabase();
 
   const supabase = createClientComponentClient<Database>()
 
@@ -51,8 +53,14 @@ export default function Generate() {
   });
 
   const channel = pusher.subscribe('eden-ai');
-  channel.bind('generatedAvatar', (data: any) => {
-    alert(JSON.stringify(data, null, 2));
+  channel.bind('generatedAvatar', (data: NextlegResponse) => {
+    console.log(JSON.stringify(data, null, 2));
+    if (data.originatingMessageId === msgId) {
+      alert("done!");
+      console.log(JSON.stringify(data, null, 2));
+      setGeneratedAvatar(data);
+      setLoading(false)
+    }
   });
 
   const handleChange = async (e: any) => {
@@ -103,9 +111,10 @@ export default function Generate() {
     if (generateCount > 0) {
       try {
         setLoading(true);
-        await axios.post(
+        const { data: { messageId: originMsgId } } = await axios.post(
           "/api/generate-avatar",
           {
+            userId,
             cmd: "imagine",
             imageUrl,
             prompt,
@@ -113,10 +122,12 @@ export default function Generate() {
           }
         )
         setGenerateCount(generateCount - 1)
+        console.log(originMsgId)
+        setMsgId(originMsgId);
       } catch (e: any) {
         console.log("error", e.message);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     }
   }
