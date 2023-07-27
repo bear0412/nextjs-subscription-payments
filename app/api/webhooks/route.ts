@@ -53,20 +53,20 @@
 //   }
 // }
 
-import { PUSHER_APPID, PUSHER_CLUSTER, PUSHER_KEY, PUSHER_SECRET } from "@/config/constant";
+import { PUSHER_APPID, PUSHER_CLUSTER, PUSHER_KEY, PUSHER_SECRET, PUSHER_CHANNEL, PUSHER_EVENT } from "@/config/constant";
 import Pusher from "pusher";
 
 export async function POST(req: Request) {
   const body = await req.json()
   const pusher = new Pusher({
-    appId: `${PUSHER_APPID}`,
-    key: `${PUSHER_KEY}`,
-    secret: `${PUSHER_SECRET}`,
-    cluster: `${PUSHER_CLUSTER}`,
+    appId: PUSHER_APPID || "",
+    key: PUSHER_KEY || "",
+    secret: PUSHER_SECRET || "",
+    cluster: PUSHER_CLUSTER || "",
     useTLS: true
   });
 
-  pusher.trigger("eden-ai", "generatedAvatar", body);
+  pusher.trigger(PUSHER_CHANNEL || "", PUSHER_EVENT || "", body);
   // console.log("called api/webhooks", req.body)
   // const { imageUrls, content, originatingMessageId } = req.body as any;
   // const NextlegReqConfig = {

@@ -47,14 +47,14 @@ export default function Generate() {
 
   const supabase = createClientComponentClient<Database>()
 
-  // Pusher.logToConsole = true;
+  Pusher.logToConsole = true;
 
-  const pusher = new Pusher(`${PUSHER_SECRET}`, {
-    cluster: `${PUSHER_CLUSTER}`
+  const pusher = new Pusher(PUSHER_SECRET || "", {
+    cluster: PUSHER_CLUSTER || ""
   });
 
-  const channel = pusher.subscribe(`${PUSHER_CHANNEL}`);
-  channel.bind(`${PUSHER_EVENT}`, (data: NextlegResponse) => {
+  const channel = pusher.subscribe(PUSHER_CHANNEL || "");
+  channel.bind(PUSHER_EVENT || "", (data: NextlegResponse) => {
     console.log(JSON.stringify(data, null, 2));
     if (data.originatingMessageId === msgId) {
       alert("done!");
@@ -210,7 +210,7 @@ export default function Generate() {
           wrapperStyle={{}}
           visible={true}
         />}
-      <>{console.log(generatedAvatar)}</>
+
       {generatedAvatar?.imageUrls.length && generatedAvatar?.originatingMessageId && generatedAvatar?.content && (
         <>
           <h1 className="text-4xl py-8">These are your images!</h1>
@@ -250,7 +250,6 @@ export default function Generate() {
               />
               <Button
                 variant="slim"
-                // disabled={avatarGenerating}
                 onClick={saveGeneratedAvatar}
               >
                 Save
