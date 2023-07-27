@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     useTLS: true
   });
 
-  pusher.trigger(PUSHER_CHANNEL || "", PUSHER_EVENT || "", body);
+  await pusher.trigger(PUSHER_CHANNEL || "", PUSHER_EVENT || "", body);
   // console.log("called api/webhooks", req.body)
   // const { imageUrls, content, originatingMessageId } = req.body as any;
   // const NextlegReqConfig = {

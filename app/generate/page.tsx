@@ -15,7 +15,7 @@ import Pusher from 'pusher-js';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 
 import { Database } from '@/types_db';
-import { PUSHER_CHANNEL, PUSHER_CLUSTER, PUSHER_EVENT, PUSHER_SECRET, SUPABASE_URL } from "@/config/constant";
+import { PUSHER_CHANNEL, PUSHER_CLUSTER, PUSHER_EVENT, PUSHER_KEY, SUPABASE_URL } from "@/config/constant";
 import { NextlegResponse } from "@/config/type"
 import 'swiper/css';
 import 'swiper/css/free-mode';
@@ -49,7 +49,7 @@ export default function Generate() {
 
   Pusher.logToConsole = true;
 
-  const pusher = new Pusher(PUSHER_SECRET || "", {
+  const pusher = new Pusher(PUSHER_KEY || "", {
     cluster: PUSHER_CLUSTER || ""
   });
 
