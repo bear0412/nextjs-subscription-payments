@@ -73,7 +73,7 @@ export async function POST(req: Request) {
   //   method: "get",
   //   url: `https://api.thenextleg.io/v2/message/${originatingMessageId || "GoNKsRq5Qp2mfqoPynTk"}`,
   //   headers: {
-  //     'Authorization': `Bearer ${NEXTLOG_TOKEN}`,
+  //     'Authorization': `Bearer ${NEXTLEG_TOKEN}`,
   //     'Content-Type': 'application/json'
   //   },
   // }

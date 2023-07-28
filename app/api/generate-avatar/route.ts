@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createClient } from '@supabase/supabase-js';
 
-import { NEXTLOG_TOKEN, NEXTLOG_URL } from "@/config/constant";
+import { NEXTLEG_TOKEN, NEXTLEG_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from "@/config/constant";
 import type { Database } from 'types_db';
 
 export async function POST(req: Request) {
@@ -9,18 +9,11 @@ export async function POST(req: Request) {
     const { userId, cmd, imageUrl, prompt, generateCount } = await req.json();
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${NEXTLOG_TOKEN}`,
+      Authorization: `Bearer ${NEXTLEG_TOKEN}`,
     };
 
-    console.log({ headers, msg: `${imageUrl} ${prompt}` })
-
-    const supabaseAdmin = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-    );
-
     const { data: res } = await axios.post(
-      `${NEXTLOG_URL}`,
+      `${NEXTLEG_URL}`,
       {
         cmd,
         msg: `${imageUrl} ${prompt}`
@@ -28,9 +21,15 @@ export async function POST(req: Request) {
       { headers }
     );
 
-    if (res && res.messageId) {
+    if (!res && !res.messageId) {
+      console.log('Nextleg Query Error')
       throw new Error('Nextleg Query Error')
     }
+
+    const supabaseAdmin = createClient<Database>(
+      SUPABASE_URL || '',
+      SUPABASE_SERVICE_ROLE_KEY || ''
+    );
 
     const { error: insertError } = await supabaseAdmin
       .from('gallery')

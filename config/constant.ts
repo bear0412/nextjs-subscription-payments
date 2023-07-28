@@ -1,5 +1,5 @@
-export const NEXTLOG_URL = process.env.NEXT_PUBLIC_NEXTLOG_URL
-export const NEXTLOG_TOKEN = process.env.NEXT_PUBLIC_NEXTLOG_TOKEN
+export const NEXTLEG_URL = process.env.NEXT_PUBLIC_NEXTLEG_URL
+export const NEXTLEG_TOKEN = process.env.NEXT_PUBLIC_NEXTLEG_TOKEN
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
 export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 export const PUSHER_APPID = process.env.NEXT_PUBLIC_PUSHER_APPID
@@ -8,3 +8,4 @@ export const PUSHER_SECRET = process.env.NEXT_PUBLIC_PUSHER_SECRET
 export const PUSHER_CLUSTER = process.env.NEXT_PUBLIC_PUSHER_CLUSTER
 export const PUSHER_CHANNEL = process.env.NEXT_PUBLIC_PUSHER_CHANNEL
 export const PUSHER_EVENT = process.env.NEXT_PUBLIC_PUSHER_EVENT
+export const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY

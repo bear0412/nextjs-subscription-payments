@@ -55,7 +55,7 @@ export default function Generate() {
 
   const channel = pusher.subscribe(PUSHER_CHANNEL || "");
   channel.bind(PUSHER_EVENT || "", (data: NextlegResponse) => {
-    console.log(JSON.stringify(data, null, 2), msgId);
+    console.log(JSON.stringify(data, null, 2), msgId, data.originatingMessageId === msgId);
     if (data.originatingMessageId === msgId) {
       alert("done!");
       // console.log(JSON.stringify(data, null, 2));
