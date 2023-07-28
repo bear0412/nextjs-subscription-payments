@@ -10,7 +10,6 @@ const Toggle = (props: Props) => {
   const { labels, children, onChange, ...rest } = props;
   const handleOnChange = () => {
     if (onChange) {
-      console.log(checked,)
       onChange(!checked);
       setChecked(!checked);
     }

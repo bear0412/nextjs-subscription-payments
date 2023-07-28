@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react"
+import React/* , { useEffect, useState } */ from "react"
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 import ImageModal from "./ImageModal"
@@ -9,61 +9,73 @@ import { useAuth } from "@/app/auth-provider";
 import { redirect } from "next/navigation";
 type Gallery = Database['public']['Tables']['gallery']['Row'];
 
-export default function Gallery() {
+export default async function Gallery() {
   const { session, userId } = useAuth();
 
   if (!session) {
     return redirect('/signin')
   }
-  console.log(
-    "in gallery",
-    session
-  )
 
-  const { userSubscription } = useSupabase();
-  const [avatars, setAvatars] = useState<Gallery[]>([]);
+  // const { userSubscription } = useSupabase();
+  // const [avatars, setAvatars] = useState<Gallery[]>([]);
   const supabase = createClientComponentClient<Database>()
+  let avatars: any[] = [];
 
-  useEffect(() => {
-    (async () => {
-      switch (userSubscription) {
-        case 999:
-        case 9999:
-        case 1999:
-        case 19999:
-          const { data: freeAvatars, error: freeError } = await supabase.from("gallery").select("*").eq("user_id", "userId").neq('selected', '')
-          if (freeError) {
-            console.log(freeError)
-            break;
-          }
-          setAvatars(freeAvatars)
-          break;
+  // const { data, error } = await supabase.rpc('get_active_subscription_unit_amount', { user_id: userId });
 
-        case 3999:
-        case 39999:
-          const { data: expertAvatars, error: expertError } = await supabase.from("gallery").select("*").eq("user_id", "userId").is('is_public', true).neq('selected', '')
-          if (expertError) {
-            console.log(expertError)
-            break;
-          }
-          setAvatars(expertAvatars)
-          break;
+  // if (error) {
+  //   console.error('Error fetching active subscription unit amount:', error);
+  //   return null;
+  // }
 
-        case 7999:
-        case 79999:
-          const { data: superAvatars, error: superError } = await supabase.from("gallery").select("*").neq('selected', '')
-          if (superError) {
-            console.log(superError)
-            break;
-          }
-          setAvatars(superAvatars)
-          break;
+  // if (data && data.length > 0) {
+  //   const { unit_amount } = data[0];
+  //   setUserSubscription(unit_amount);
+  // }
 
-        default:
-          break;
+  let userSubscription = 3999
+
+  // useEffect(() => {
+  //   (async () => {
+  switch (userSubscription) {
+    case 999:
+    case 9999:
+    case 1999:
+    case 19999:
+      const { data: freeAvatars, error: freeError } = await supabase.from("gallery").select("*").eq("user_id", userId).neq('selected', '')
+      console.log(freeAvatars, freeError)
+      if (freeError) {
+        console.log(freeError)
+        break;
       }
-    })()
-  }, [])
+      avatars = freeAvatars
+      break;
+
+    case 3999:
+    case 39999:
+      const { data: expertAvatars, error: expertError } = await supabase.from("gallery").select("*")/* .eq("user_id", userId).is('is_public', true) */.neq('selected', '')
+      if (expertError) {
+        console.log(expertError)
+        break;
+      }
+      avatars = expertAvatars
+      break;
+
+    // case 7999:
+    // case 79999:
+    //   const { data: superAvatars, error: superError } = await supabase.from("gallery").select("*").neq('selected', '')
+    //   if (superError) {
+    //     console.log(superError)
+    //     break;
+    //   }
+    //   setAvatars(superAvatars)
+    //   break;
+
+    default:
+      break;
+  }
+  //   })()
+  // }, [])
 
 
   return (
@@ -73,6 +85,7 @@ export default function Gallery() {
           <div className="container grid grid-cols-3 gap-2 mx-auto">
             {avatars.map((item, inx) =>
               <ImageModal
+                key={inx}
                 src={`${item.selected}`}
                 created={`${item.created_at}`}
                 prompt={`${item.prompt}`}

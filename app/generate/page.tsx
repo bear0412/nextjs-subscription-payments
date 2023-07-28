@@ -253,7 +253,7 @@ export default function Generate() {
           <div className="float-right">
             <div className="flex justify-between w-80">
               <Toggle
-                labels={['Private', 'Public']}
+                labels={['Public', 'Private']}
                 onChange={setIsPublic}
               />
               <button
