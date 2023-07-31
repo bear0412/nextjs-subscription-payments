@@ -10,7 +10,6 @@ const ImageModal = (props: Props) => {
   const { src, created, prompt } = props;
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
   const handleOpen = () => setOpen((cur) => !cur);
 
   const download = async () => {
@@ -50,7 +49,7 @@ const ImageModal = (props: Props) => {
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                {/* <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                   <h3 className="text-3xl font-semibold">
                     Generated Avatar
                   </h3>
@@ -62,7 +61,7 @@ const ImageModal = (props: Props) => {
                       ×
                     </span>
                   </button>
-                </div>
+                </div> */}
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <img
@@ -85,7 +84,7 @@ const ImageModal = (props: Props) => {
                     type="button"
                     onClick={download}
                   >
-                    Free Download
+                    {loading ? "Downloading..." : "Free Download"}
                   </button>
                 </div>
               </div>

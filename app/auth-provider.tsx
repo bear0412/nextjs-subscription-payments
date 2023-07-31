@@ -3,6 +3,8 @@ import { Session } from "@supabase/gotrue-js/src/lib/types"
 import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
+import { AUTH_TOKEN_NAME, EMPTY_TOKEN } from "@/config/constant";
 import { SetValue } from "@/config/type"
 
 type AuthContext = {
@@ -23,16 +25,18 @@ export default function AuthProvider({
   const [userId, setUserId] = useState("")
   const [generateCount, setGenerateCount] = useState(0)
   const [session, setSession] = useState<Session | null>(null)
+  const [token, storeToken] = useLocalStorage(AUTH_TOKEN_NAME, EMPTY_TOKEN);
   const router = useRouter()
 
   useEffect(() => {
     console.log("authprovider useeffect");
+    supabase.auth.getUser(token)
     async function getSession() {
-      // const supabase = createServerSupabaseClient();
       try {
         const {
           data: { session }
         } = await supabase.auth.getSession();
+        console.log("getsession's session", session)
         setSession(session);
       } catch (error) {
         console.error('Error:', error);

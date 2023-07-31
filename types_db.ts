@@ -259,14 +259,7 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      get_active_subscription_unit_amount: {
-        Args: {
-          user_id: string
-        }
-        Returns: {
-          unit_amount: number
-        }[]
-      }
+      [_ in never]: never
     }
     Enums: {
       pricing_plan_interval: "day" | "week" | "month" | "year"

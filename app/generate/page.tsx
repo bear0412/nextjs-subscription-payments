@@ -57,7 +57,6 @@ export default function Generate() {
   channel.bind(PUSHER_EVENT || "", (data: NextlegResponse) => {
     console.log(JSON.stringify(data, null, 2), msgId, data.originatingMessageId === msgId);
     if (data.originatingMessageId === msgId) {
-      alert("done!");
       // console.log(JSON.stringify(data, null, 2));
       setGeneratedAvatar(data);
       setLoading(false)
@@ -90,13 +89,6 @@ export default function Generate() {
         if (data) {
           const imageLink = `${SUPABASE_URL}/storage/v1/object/public/ai-gallery/${data.path}`;
           setImageUrl(imageLink);
-          // const { error } = await supabase.from("gallery").insert({
-          //   image_link: imageLink,
-          //   user_id: userId
-          // })
-          // if (error) {
-          //   throw error
-          // }
         }
       } catch (error) {
         alert('Error loading user data!')
@@ -200,8 +192,9 @@ export default function Generate() {
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   onClick={handleSubmit}
-                  disabled={loading}
+                  disabled={loading || (!prompt)}
                 >
+                  <>{console.log(loading, (!prompt))}</>
                   {loading ? "Submitting..." : "Submit"}
                 </button>
               </div>
@@ -218,55 +211,62 @@ export default function Generate() {
           visible={true}
         />}
 
-      {generatedAvatar?.imageUrls.length && generatedAvatar?.originatingMessageId && generatedAvatar?.content && (
-        <>
-          <h1 className="text-4xl py-8">These are your images!</h1>
-          <div className="">
-            <Swiper
-              loop={true}
-              onActiveIndexChange={(e) => setActiveInx(e.activeIndex)}
-              spaceBetween={10}
-              navigation={true}
-              thumbs={{ swiper: thumbsSwiper }}
-              modules={[FreeMode, Navigation, Thumbs]}
-              className="mySwiper2"
-            >
-              {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide>
-                <img src={`${url}`} />
-              </SwiperSlide>))}
-            </Swiper>
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              loop={true}
-              spaceBetween={10}
-              slidesPerView={4}
-              freeMode={true}
-              watchSlidesProgress={true}
-              modules={[FreeMode, Navigation, Thumbs]}
-              className="mySwiper"
-            >
-              {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide>
-                <img src={`${url}`} />
-              </SwiperSlide>))}
-            </Swiper>
-          </div>
-          <div className="float-right">
-            <div className="flex justify-between w-80">
-              <Toggle
-                labels={['Public', 'Private']}
-                onChange={setIsPublic}
-              />
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                disabled={saveLoading}
-                onClick={saveGeneratedAvatar}
+      {
+        !loading ?
+          generatedAvatar?.imageUrls.length && generatedAvatar?.originatingMessageId && generatedAvatar?.content &&
+          (<>
+            <h1 className="text-4xl py-8">These are your images!</h1>
+            <div className="">
+              <Swiper
+                loop={true}
+                onActiveIndexChange={(e) => setActiveInx(e.activeIndex)}
+                spaceBetween={10}
+                navigation={true}
+                thumbs={{ swiper: thumbsSwiper }}
+                modules={[FreeMode, Navigation, Thumbs]}
+                className="mySwiper2"
               >
-                {saveLoading ? "Saving..." : "Save"}
-              </button>
+                {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide>
+                  <img src={`${url}`} />
+                </SwiperSlide>))}
+              </Swiper>
+              <Swiper
+                onSwiper={setThumbsSwiper}
+                loop={true}
+                spaceBetween={10}
+                slidesPerView={4}
+                freeMode={true}
+                watchSlidesProgress={true}
+                modules={[FreeMode, Navigation, Thumbs]}
+                className="mySwiper"
+              >
+                {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide>
+                  <img src={`${url}`} />
+                </SwiperSlide>))}
+              </Swiper>
             </div>
-          </div>
-        </>
-      )}
+            <div className="float-right">
+              <div className="flex justify-between w-80">
+                <Toggle
+                  labels={['Public', 'Private']}
+                  onChange={setIsPublic}
+                />
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  disabled={saveLoading}
+                  onClick={saveGeneratedAvatar}
+                >
+                  {saveLoading ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
+          </>)
+          : (<img
+            src="/loader.gif"
+            alt="loading"
+            className="inline-block h-48 ml-4 "
+          />)
+      }
     </div>
   );
 }
