@@ -36,7 +36,8 @@ export async function POST(req: Request) {
       .insert({
         user_id: userId,
         image_link: imageUrl,
-        origin_message: res.messageId
+        origin_message: res.messageId,
+        prompt: prompt
       })
 
     if (insertError) {

@@ -39,7 +39,7 @@ export default function Gallery() {
           case 9999:
           case 1999:
           case 19999:
-            const { data: freeAvatars, error: freeError } = await supabase.from("gallery").select("*")/* .eq("user_id", userId) */.neq('selected', '')
+            const { data: freeAvatars, error: freeError } = await supabase.from("gallery").select("*").eq("user_id", userId).neq('selected', '')
             console.log(freeAvatars, freeError)
             if (freeError) {
               console.log(freeError)

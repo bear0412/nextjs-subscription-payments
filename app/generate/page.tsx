@@ -260,11 +260,13 @@ export default function Generate() {
               </div>
             </div>
           </>)
-          : (<img
-            src="/loader.gif"
-            alt="loading"
-            className="inline-block h-48 ml-4 "
-          />)
+          : (<div className="absolute w-full h-full top-0 bg-[#00000099] z-50">
+            <img
+              src="/loader.gif"
+              alt="loading"
+              className="h-48 mx-auto"
+            />
+          </div>)
       }
     </div>
   );
