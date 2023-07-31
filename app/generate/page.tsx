@@ -55,7 +55,7 @@ export default function Generate() {
 
   const channel = pusher.subscribe(PUSHER_CHANNEL || "");
   channel.bind(PUSHER_EVENT || "", (data: NextlegResponse) => {
-    console.log(JSON.stringify(data, null, 2), msgId, data.originatingMessageId === msgId);
+    console.log(JSON.stringify(data, null, 2), `msgId:${msgId},`, data.originatingMessageId === msgId);
     if (data.originatingMessageId === msgId) {
       // console.log(JSON.stringify(data, null, 2));
       setGeneratedAvatar(data);
@@ -114,9 +114,9 @@ export default function Generate() {
             generateCount,
           }
         )
-        setGenerateCount(generateCount - 1)
-        console.log(originMsgId)
         setMsgId(originMsgId);
+        console.log(originMsgId)
+        setGenerateCount(generateCount - 1)
       } catch (e: any) {
         console.log("error", e.message);
       } finally {
@@ -194,7 +194,6 @@ export default function Generate() {
                   onClick={handleSubmit}
                   disabled={loading || (!prompt)}
                 >
-                  <>{console.log(loading, (!prompt))}</>
                   {loading ? "Submitting..." : "Submit"}
                 </button>
               </div>

@@ -29,14 +29,14 @@ export default function AuthProvider({
   const router = useRouter()
 
   useEffect(() => {
-    console.log("authprovider useeffect");
+    // console.log("authprovider useeffect");
     supabase.auth.getUser(token)
     async function getSession() {
       try {
         const {
           data: { session }
         } = await supabase.auth.getSession();
-        console.log("getsession's session", session)
+        // console.log("getsession's session", session)
         setSession(session);
       } catch (error) {
         console.error('Error:', error);
