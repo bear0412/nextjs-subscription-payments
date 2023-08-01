@@ -6,7 +6,6 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { ThreeDots } from "react-loader-spinner";
 import { useSupabase } from "@/app/supabase-provider";
 import { useAuth } from "@/app/auth-provider"
-import Button from '@/components/ui/Button';
 import Toggle from '@/components/ui/Toggle';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperProps } from "swiper";
@@ -72,7 +71,6 @@ export default function Generate() {
       });
       try {
         toggleAvatarGenerating();
-        setLoading(true)
 
         const filename = `${uuidv4()}-${uploadFile.name}`;
         const { data, error } = await supabase.storage
@@ -94,7 +92,6 @@ export default function Generate() {
         alert('Error loading user data!')
         console.log(error);
       } finally {
-        setLoading(false)
         toggleAvatarGenerating();
       }
     }
@@ -192,9 +189,9 @@ export default function Generate() {
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   onClick={handleSubmit}
-                  disabled={loading || (!prompt)}
+                  disabled={loading || avatarGenerating || (!prompt)}
                 >
-                  {loading ? "Submitting..." : "Submit"}
+                  {avatarGenerating ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </div>

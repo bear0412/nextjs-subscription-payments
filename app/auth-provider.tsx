@@ -22,6 +22,7 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const [supabase] = useState(() => createPagesBrowserClient())
+  const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState("")
   const [generateCount, setGenerateCount] = useState(0)
   const [session, setSession] = useState<Session | null>(null)
@@ -29,8 +30,6 @@ export default function AuthProvider({
   const router = useRouter()
 
   useEffect(() => {
-    // console.log("authprovider useeffect");
-    supabase.auth.getUser(token)
     async function getSession() {
       try {
         const {
@@ -64,9 +63,9 @@ export default function AuthProvider({
         case "SIGNED_IN":
           console.log("SIGNED_IN")
           if (session) {
-            setSession(session)
             const { user: { id: authUserId } } = session
             setUserId(authUserId);
+            setSession(session)
             const { data: countData, error } = await supabase.from("users").select("generate_count").eq("id", authUserId)
             if (error) {
               console.log(error)
@@ -105,16 +104,31 @@ export default function AuthProvider({
     };
   }, [router, supabase]);
 
+  useEffect(() => {
+    setLoading(false)
+  }, [session])
+
+
   return (
-    <Context.Provider
-      value={{
-        userId,
-        session,
-        generateCount,
-        setGenerateCount
-      }}>
-      <>{children}</>
-    </Context.Provider>
+    <>{
+      !loading
+        ? (<Context.Provider
+          value={{
+            userId,
+            session,
+            generateCount,
+            setGenerateCount
+          }}>
+          <>{children}</>
+        </Context.Provider>)
+        : (<div className="absolute w-full h-full top-0 bg-[#00000099] z-50">
+          <img
+            src="/loader.gif"
+            alt="loading"
+            className="h-48 mx-auto"
+          />
+        </div>)
+    }</>
   );
 }
 
