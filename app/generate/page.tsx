@@ -42,7 +42,7 @@ export default function Generate() {
   const [isPublic, setIsPublic] = useState(false);
   const [activeInx, setActiveInx] = useState(0)
   const [image, setImage] = useState<Image | null>(null);
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperProps | undefined>();
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperProps | null>(null);
   const [generatedAvatar, setGeneratedAvatar] = useState<NextlegResponse | null>(null);
   const { avatarGenerating, toggleAvatarGenerating } = useSupabase();
 
@@ -101,6 +101,7 @@ export default function Generate() {
     if (generateCount > 0) {
       try {
         setLoading(true);
+        setThumbsSwiper(null)
         const { data: { messageId: originMsgId } } = await axios.post(
           "/api/generate-avatar",
           {
@@ -222,7 +223,7 @@ export default function Generate() {
                 modules={[FreeMode, Navigation, Thumbs]}
                 className="mySwiper2"
               >
-                {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide>
+                {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide key={inx}>
                   <img src={`${url}`} />
                 </SwiperSlide>))}
               </Swiper>
@@ -236,7 +237,7 @@ export default function Generate() {
                 modules={[FreeMode, Navigation, Thumbs]}
                 className="mySwiper"
               >
-                {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide>
+                {generatedAvatar?.imageUrls.map((url, inx) => (<SwiperSlide key={inx}>
                   <img src={`${url}`} />
                 </SwiperSlide>))}
               </Swiper>
