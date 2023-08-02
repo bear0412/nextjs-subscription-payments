@@ -30,28 +30,6 @@ export default function AuthProvider({
   const router = useRouter()
 
   useEffect(() => {
-    async function getSession() {
-      try {
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
-        // console.log("getsession's session", session)
-        setSession(session);
-      } catch (error) {
-        console.error('Error:', error);
-        setSession(null);
-      }
-    }
-
-    getSession();
-
-    return () => {
-      setSession(null)
-    }
-  }, [])
-
-
-  useEffect(() => {
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -96,18 +74,14 @@ export default function AuthProvider({
         default:
           break;
       }
-      router.refresh();
+
+      setLoading(false)
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, [router, supabase]);
-
-  useEffect(() => {
-    setLoading(false)
-  }, [session])
-
 
   return (
     <>{

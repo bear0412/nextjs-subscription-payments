@@ -12,14 +12,9 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ReactNode, /* useEffect, useState */ } from 'react';
-import { Session, Users, SubscriptionWithProduct } from "@/config/type";
+import { ReactNode } from 'react';
 
 export default async function Account() {
-  // const [session, setSession] = useState<Session | null>(null)
-  // const [userDetails, setUserDetails] = useState<Users | null>(null)
-  // const [subscription, setSubscription] = useState<SubscriptionWithProduct | null>(null)
-
   const [session, userDetails, subscription] = await Promise.all([
     getSession(),
     getUserDetails(),
@@ -29,13 +24,6 @@ export default async function Account() {
   if (!session) {
     return redirect('/signin');
   }
-  // useEffect(() => {
-  //   (async () => {
-  //     setSession(session)
-  //     setUserDetails(userDetails)
-  //     setSubscription(subscription)
-  //   })()
-  // }, [])
 
   const subscriptionPrice =
     subscription &&
