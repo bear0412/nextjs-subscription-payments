@@ -56,7 +56,6 @@ export default function Generate() {
   channel.bind(PUSHER_EVENT || "", (data: NextlegResponse) => {
     console.log(JSON.stringify(data, null, 2), `msgId:${msgId},`, data.originatingMessageId === msgId);
     if (data.originatingMessageId === msgId) {
-      // console.log(JSON.stringify(data, null, 2));
       setGeneratedAvatar(data);
       setLoading(false)
     }
@@ -198,15 +197,15 @@ export default function Generate() {
             </div>
           </div>
         </>
-        : <ThreeDots
-          height="80"
-          width="80"
-          radius="9"
-          color="#4fa94d"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          visible={true}
-        />}
+        : (<div className="fixed left-0 top-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden outline-none absolute w-full h-full top-0 bg-[#00000099] z-50">
+          <div className="flex items-center justify-center min-h-screen">
+            <img
+              src="/loader.gif"
+              alt="loading"
+              className="h-48 flex items-center justify-center"
+            />
+          </div>
+        </div>)}
 
       {
         !loading ?
@@ -216,7 +215,8 @@ export default function Generate() {
             <div className="">
               <Swiper
                 loop={true}
-                onActiveIndexChange={(e) => setActiveInx(e.activeIndex)}
+                onRealIndexChange={(e) => { console.log(e.realIndex); setActiveInx(e.realIndex) }}
+                // onActiveIndexChange={(e) => { console.log(e.activeIndex); setActiveInx(e.activeIndex) }}
                 spaceBetween={10}
                 navigation={true}
                 thumbs={{ swiper: thumbsSwiper }}
@@ -258,14 +258,15 @@ export default function Generate() {
               </div>
             </div>
           </>)
-          : (<div className="absolute w-full h-full top-0 bg-[#00000099] z-50">
-            <img
-              src="/loader.gif"
-              alt="loading"
-              className="h-48 mx-auto"
-            />
-          </div>)
-      }
+          : (<div className="fixed left-0 top-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden outline-none absolute w-full h-full top-0 bg-[#00000099] z-50">
+            <div className="flex items-center justify-center min-h-screen">
+              <img
+                src="/loader.gif"
+                alt="loading"
+                className="h-48 flex items-center justify-center"
+              />
+            </div>
+          </div>)}
     </div>
   );
 }

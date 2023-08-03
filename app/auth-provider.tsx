@@ -95,12 +95,14 @@ export default function AuthProvider({
           }}>
           <>{children}</>
         </Context.Provider>)
-        : (<div className="absolute w-full h-full top-0 bg-[#00000099] z-50">
-          <img
-            src="/loader.gif"
-            alt="loading"
-            className="h-48 mx-auto"
-          />
+        : (<div className="fixed left-0 top-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden outline-none absolute w-full h-full top-0 bg-[#00000099] z-50">
+          <div className="flex items-center justify-center min-h-screen">
+            <img
+              src="/loader.gif"
+              alt="loading"
+              className="h-48 flex items-center justify-center"
+            />
+          </div>
         </div>)
     }</>
   );
