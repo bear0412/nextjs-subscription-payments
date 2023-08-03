@@ -48,7 +48,7 @@ export default function Gallery() {
               .select("*")
               .eq("user_id", userId)
               .neq('selected', '')
-              .order('created_at', { ascending: true })
+              .order('created_at', { ascending: false })
             if (freeError) {
               console.log(freeError)
               break;
@@ -62,7 +62,7 @@ export default function Gallery() {
               .from("gallery")
               .select("*")
               .neq('selected', '')
-              .order('created_at', { ascending: true })
+              .order('created_at', { ascending: false })
             if (expertError) {
               console.log(expertError)
               break;
@@ -82,7 +82,6 @@ export default function Gallery() {
   useLayoutEffect(() => {
     function updateSize() {
       const currentWidth = window.innerWidth
-      console.log(currentWidth)
       if (currentWidth < 640)
         setAvatarsPerPage(1 * 3)
       if (currentWidth < 1024)
@@ -133,14 +132,16 @@ export default function Gallery() {
             </div>)
             : (avatars && avatars.length) ?
               <div>
-                <Paginate
-                  postsPerPage={avatarsPerPage}
-                  totalPosts={avatars.length}
-                  currentPage={currentPage}
-                  paginate={paginate}
-                  previousPage={previousPage}
-                  nextPage={nextPage}
-                />
+                <div className="pb-2">
+                  <Paginate
+                    postsPerPage={avatarsPerPage}
+                    totalPosts={avatars.length}
+                    currentPage={currentPage}
+                    paginate={paginate}
+                    previousPage={previousPage}
+                    nextPage={nextPage}
+                  />
+                </div>
                 <div className="container grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 mx-auto">
                   {avatars.slice(avatarsPerPage * (currentPage - 1), avatarsPerPage * currentPage).map((item, inx) =>
                     <ImageModal
