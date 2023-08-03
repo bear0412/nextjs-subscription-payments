@@ -243,7 +243,7 @@ export default function Generate() {
               </Swiper>
             </div>
             <div className="float-right">
-              <div className="flex justify-between w-80">
+              <div className="flex justify-between w-80 pb-2">
                 <Toggle
                   labels={['Public', 'Private']}
                   onChange={setIsPublic}

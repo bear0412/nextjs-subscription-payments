@@ -19,7 +19,7 @@ const Paginate = (props: Props) => {
 	return (
 		<div className="pagination-container">
 			<ul className="flex justify-center items-center mt-12 gap-5">
-				<li onClick={previousPage} className="text-base font-semibold text-blue-500 bg-black cursor-pointer rounded-[10px] px-[10px] py-[20px] ease-linear duration-500 transition-all hover:text-white hover:bg-blue-500">
+				<li onClick={previousPage} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
 					Prev
 				</li>
 				{pageNumbers.map((number) => (
@@ -27,13 +27,13 @@ const Paginate = (props: Props) => {
 						key={number}
 						onClick={() => paginate(number)}
 						className={
-							'text-base font-semibold text-blue-500 bg-black cursor-pointer rounded-[10px] px-[10px] py-[20px] ease-linear duration-500 transition-all hover:text-white hover:bg-blue-500 ' + (number === currentPage ? 'active' : '')
+							'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ' + (number === currentPage ? 'active' : '')
 						}
 					>
 						{number}
 					</li>
 				))}
-				<li onClick={nextPage} className="text-base font-semibold text-blue-500 bg-black cursor-pointer rounded-[10px] px-[10px] py-[20px] ease-linear duration-500 transition-all hover:text-white hover:bg-blue-500">
+				<li onClick={nextPage} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
 					Next
 				</li>
 			</ul>
