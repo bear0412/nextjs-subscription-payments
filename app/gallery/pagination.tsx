@@ -142,7 +142,7 @@ interface Props {
 
 function PaginationNav1Presentation(props: Props) {
   const { postsPerPage, totalPosts, currentPage, paginate } = props
-  const pageCount = totalPosts / postsPerPage + 1;
+  const pageCount = Math.ceil(totalPosts / postsPerPage);
   return (
     <div className="flex gap-3 flex-wrap p-6 py-12">
       <PaginationNav1
