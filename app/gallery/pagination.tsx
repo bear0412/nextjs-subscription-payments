@@ -1,16 +1,23 @@
 import { useCallback, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-function Button2({ content, onClick, active, disabled }) {
+interface Props2 {
+  content: any,
+  active: any,
+  disabled: any,
+  onClick: () => void,
+}
+
+function Button2(props: Props2) {
+  const { content, active, disabled, onClick } = props;
   return (
     <button
       className={`flex flex-col items-center justify-center w-9 h-9 text-sm font-normal transition-colors rounded-lg
       ${active && "bg-blue-500 text-white"}
-      ${
-        !disabled
+      ${!disabled
           ? "text-blue-500 cursor-pointer bg-[rgb(59 130 246 / var(--tw-bg-opacity))] hover:bg-blue-500 hover:text-white"
           : "text-gray-500 cursor-not-allowed"
-      }
+        }
       `}
       onClick={onClick}
       disabled={disabled}
@@ -20,13 +27,24 @@ function Button2({ content, onClick, active, disabled }) {
   );
 }
 
-function PaginationNav1({
-  gotoPage,
-  canPreviousPage,
-  canNextPage,
-  pageCount,
-  pageIndex,
-}) {
+
+interface Props3 {
+  gotoPage: any,
+  canPreviousPage: any,
+  canNextPage: any,
+  pageCount: any,
+  pageIndex: any
+};
+
+
+function PaginationNav1(props: Props3) {
+  const {
+    gotoPage,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    pageIndex,
+  } = props;
   const renderPageLinks = useCallback(() => {
     if (pageCount === 0) return null;
     const visiblePageButtonCount = 3;
@@ -52,10 +70,12 @@ function PaginationNav1({
           content={pageIndexToMap + 1}
           onClick={() => gotoPage(pageIndexToMap)}
           active={pageIndex === pageIndexToMap}
+          disabled={false}
         />
       </li>
     ));
   }, [pageCount, pageIndex]);
+
   return (
     <ul className="flex gap-2">
       <li>
@@ -68,6 +88,7 @@ function PaginationNav1({
           }
           onClick={() => gotoPage(0)}
           disabled={!canPreviousPage}
+          active={false}
         />
       </li>
       <li>
@@ -79,6 +100,7 @@ function PaginationNav1({
           }
           onClick={() => gotoPage(pageIndex - 1)}
           disabled={!canPreviousPage}
+          active={false}
         />
       </li>
       {renderPageLinks()}
@@ -91,6 +113,7 @@ function PaginationNav1({
           }
           onClick={() => gotoPage(pageIndex + 1)}
           disabled={!canNextPage}
+          active={false}
         />
       </li>
       <li>
@@ -103,6 +126,7 @@ function PaginationNav1({
           }
           onClick={() => gotoPage(pageCount - 1)}
           disabled={!canNextPage}
+          active={false}
         />
       </li>
     </ul>
@@ -110,15 +134,15 @@ function PaginationNav1({
 }
 
 interface Props {
-	postsPerPage: number,
-	totalPosts: number,
-	currentPage: number,
-	paginate: (pageNumber: number) => void,
+  postsPerPage: number,
+  totalPosts: number,
+  currentPage: number,
+  paginate: (pageNumber: number) => void,
 }
 
 function PaginationNav1Presentation(props: Props) {
   const { postsPerPage, totalPosts, currentPage, paginate } = props
-  const pageCount = parseInt(totalPosts/postsPerPage) + 1;
+  const pageCount = totalPosts / postsPerPage + 1;
   return (
     <div className="flex gap-3 flex-wrap p-6 py-12">
       <PaginationNav1
