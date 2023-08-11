@@ -27,6 +27,23 @@ interface Image {
   raw: File;
 }
 
+const promptList = [
+  "an animated hero in a bright outfit, in the style of furaffinity, cosmic, manga-inspired, dark azure and gold, [tyler edlin], superheroes, [shuzo oshimi]",
+  "a ue5 3D character wearing a cape with an image of a city behind it, in the style of furaffinity, light gold and dark azure, handsome, uniformly staged images, glowing colors, shiny eyes, oshare kei",
+  "one of the character from the animated series of dc comics person, dc superhero, hero, fireman, in the style of shige's visual aesthetic style, light gold and black, celestialpunk, vibrant, lively, shiny eyes, supernatural realism, toonami",
+  "colored superhero standing on a city street, in the style of dark magenta and light gold, vibrant manga, cabincore, neo-academism, youthful energy, energy-filled illustrations, rtx",
+  "the character from 'mr marvel', in the style of sailor moon manga style, toonami, celestialpunk, dark purple and light gold, handsome, uniformly staged images, neo-academism",
+  "a cartoon hero holding a giant star and superhero hat, in the style of vibrant manga, dark azure and gold, futuristic designs, the vancouver school, contest winner, vibrant, neon colors, rtx",
+];
+
+const colorList = [
+  "red",
+  "blue",
+  "purple",
+  "black",
+  "white"
+];
+
 export default function Generate() {
   const { session, userId, generateCount, setGenerateCount } = useAuth();
 
@@ -34,17 +51,24 @@ export default function Generate() {
     return redirect('/signin');
   }
 
+  
+
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false)
   const [msgId, setMsgId] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [activeInx, setActiveInx] = useState(0)
   const [image, setImage] = useState<Image | null>(null);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperProps | null>(null);
   const [generatedAvatar, setGeneratedAvatar] = useState<NextlegResponse | null>(null);
   const { avatarGenerating, toggleAvatarGenerating } = useSupabase();
+
+  const [prompt1, setPrompt1] = useState("0");
+  const [prompt2, setPrompt2] = useState("0");
+  const [prompt3, setPrompt3] = useState("0");
 
   const supabase = createClientComponentClient<Database>()
 
@@ -112,7 +136,33 @@ export default function Generate() {
           }
         )
         setMsgId(originMsgId);
-        console.log(originMsgId)
+        console.log(msgId)
+        setGenerateCount(generateCount - 1)
+      } catch (e: any) {
+        console.log("error", e.message);
+      } finally {
+        // setLoading(false);
+      }
+    }
+  }
+
+  const handleSubmitWithSelects = async () => {
+    if (generateCount > 0) {
+      try {
+        setLoading(true);
+        setThumbsSwiper(null)
+        const { data: { messageId: originMsgId } } = await axios.post(
+          "/api/generate-avatar",
+          {
+            userId,
+            cmd: "imagine",
+            imageUrl,
+            prompt: (prompt2 === "0" ? "male":"female") + " " + colorList[parseInt(prompt3)] + " color of " + promptList[parseInt(prompt1)],
+            generateCount,
+          }
+        )
+        setMsgId(originMsgId);
+        console.log(msgId)
         setGenerateCount(generateCount - 1)
       } catch (e: any) {
         console.log("error", e.message);
@@ -172,6 +222,14 @@ export default function Generate() {
           </div>
           {/* Text Prompt */}
           <div className="w-full mx-auto px-20">
+            <label className="relative inline-flex items-center cursor-pointer pr-2">
+              <input type="checkbox" value="" className="sr-only peer" onChange={(e) => setVisible(e.target.checked)}/>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            </label>
+            Switch prompt type
+          </div>
+          {visible ?
+          (<div className="w-full mx-auto px-20">
             <div>
               <label
                 htmlFor="email"
@@ -195,7 +253,78 @@ export default function Generate() {
                 </button>
               </div>
             </div>
+          </div>)
+          :(
+          <div className="w-full mx-auto px-20">
+            <div className="w-full mx-auto px-20 flex font-white">
+              <div className="w-1/3">
+                <div className="flex items-center mt-2">
+                  <input checked={prompt1==="0"?true:false} onChange={(e) => setPrompt1(e.target.value)} id="default-checkbox" type="checkbox" value="0" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium">SuperHero1</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt1==="1"?true:false} onChange={(e) => setPrompt1(e.target.value)} id="checked-checkbox" type="checkbox" value="1" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">SuperHero2</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt1==="2"?true:false} onChange={(e) => setPrompt1(e.target.value)} id="checked-checkbox" type="checkbox" value="2" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">SuperHero3</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt1==="3"?true:false} onChange={(e) => setPrompt1(e.target.value)} id="checked-checkbox" type="checkbox" value="3" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">SuperHero4</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt1==="4"?true:false} onChange={(e) => setPrompt1(e.target.value)} id="checked-checkbox" type="checkbox" value="4" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">SuperHero5</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt1==="5"?true:false} onChange={(e) => setPrompt1(e.target.value)} id="checked-checkbox" type="checkbox" value="5" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">SuperHero6</label>
+                </div>
+              </div>
+              <div className="w-1/3">
+                <div className="flex items-center mt-2">
+                  <input checked={prompt2==="0"?true:false} onChange={(e) => setPrompt2(e.target.value)} id="default-checkbox" type="checkbox" value="0" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium">Male</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt2==="1"?true:false} onChange={(e) => setPrompt2(e.target.value)} id="checked-checkbox" type="checkbox" value="1" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">Female</label>
+                </div>
+              </div>
+              <div className="w-1/3">
+                <div className="flex items-center mt-2">
+                  <input checked={prompt3==="0"?true:false} onChange={(e) => setPrompt3(e.target.value)} id="default-checkbox" type="checkbox" value="0" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium">Red</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt3==="1"?true:false} onChange={(e) => setPrompt3(e.target.value)} id="checked-checkbox" type="checkbox" value="1" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">Blue</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt3==="2"?true:false} onChange={(e) => setPrompt3(e.target.value)} id="checked-checkbox" type="checkbox" value="2" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">Purple</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt3==="3"?true:false} onChange={(e) => setPrompt3(e.target.value)} id="checked-checkbox" type="checkbox" value="3" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">Black</label>
+                </div>
+                <div className="flex items-center mt-2">
+                  <input checked={prompt3==="4"?true:false} onChange={(e) => setPrompt3(e.target.value)} id="checked-checkbox" type="checkbox" value="4" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                  <label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium">White</label>
+                </div>
+              </div>
+            </div>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleSubmitWithSelects}
+              disabled={loading || avatarGenerating}
+            >
+              {avatarGenerating ? "Submitting..." : "Submit"}
+            </button>
           </div>
+          )}
         </>
         : (<div className="fixed left-0 top-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden outline-none absolute w-full h-full top-0 bg-[#00000099] z-50">
           <div className="flex items-center justify-center min-h-screen">
@@ -215,8 +344,7 @@ export default function Generate() {
             <div className="">
               <Swiper
                 loop={true}
-                onRealIndexChange={(e) => { console.log(e.realIndex); setActiveInx(e.realIndex) }}
-                // onActiveIndexChange={(e) => { console.log(e.activeIndex); setActiveInx(e.activeIndex) }}
+                onRealIndexChange={(e) => setActiveInx(e.realIndex)}
                 spaceBetween={10}
                 navigation={true}
                 thumbs={{ swiper: thumbsSwiper }}

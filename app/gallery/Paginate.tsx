@@ -19,7 +19,7 @@ const Paginate = (props: Props) => {
 	return (
 		<div className="pagination-container">
 			<ul className="flex justify-center items-center mt-12 gap-5">
-				<li onClick={previousPage} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+				<li onClick={previousPage} className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
 					Prev
 				</li>
 				{pageNumbers.map((number) => (
@@ -27,7 +27,7 @@ const Paginate = (props: Props) => {
 						key={number}
 						onClick={() => paginate(number)}
 						className={
-							'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ' + (number === currentPage ? 'active' : '')
+							'cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ' + (number === currentPage ? 'active' : '')
 						}
 					>
 						{number}

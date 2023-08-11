@@ -10,6 +10,7 @@ const ImageModal = (props: Props) => {
   const { src, created, prompt } = props;
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
 
   const download = async () => {
@@ -38,7 +39,11 @@ const ImageModal = (props: Props) => {
   return (
     <>
       <div className="w-full rounded">
-        <img src={src} alt="image" onClick={handleOpen} />
+        <img
+          src={src}
+          alt="image"
+          onClick={handleOpen} 
+        />
       </div>
       {open ? (
         <>
@@ -67,10 +72,20 @@ const ImageModal = (props: Props) => {
                   <img
                     alt="nature"
                     className="h-[48rem] w-full object-cover object-center"
+                    // onLoad={() => console.log("onLoad")}
                     src={src}
                   />
                 </div>
                 {/*footer*/}
+                <div className="flex items-center p-6 border-t border-solid border-gray-200 rounded-b text-black min-h-[100px]">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" value="" className="sr-only peer" onChange={(e) => setVisible(e.target.checked)}/>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                  </label>
+                  &nbsp;&nbsp;
+                  {visible && (<div>{prompt}</div>)}
+                </div>
+
                 <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"

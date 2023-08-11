@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState, useLayoutEffect } from "react"
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { PaginationNav1Presentation } from './pagination';
 
-import Paginate from './Paginate';
 import ImageModal from "./ImageModal"
 import { Database } from '@/types_db'
 import { useAuth } from "@/app/auth-provider";
@@ -13,7 +13,7 @@ export default function Gallery() {
   const { session, userId } = useAuth();
   const [loading, setLoading] = useState(true)
   // const [blogPosts, setBlogPosts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [avatarsPerPage, setAvatarsPerPage] = useState(0)
 
   if (!session) {
@@ -133,17 +133,26 @@ export default function Gallery() {
             : (avatars && avatars.length) ?
               <div>
                 <div className="pb-2">
-                  <Paginate
+                  <PaginationNav1Presentation
+                    postsPerPage={avatarsPerPage}
+                    totalPosts={avatars.length}
+                    currentPage={currentPage}
+                    paginate={paginate}
+                  />
+                  {/* <Paginate
                     postsPerPage={avatarsPerPage}
                     totalPosts={avatars.length}
                     currentPage={currentPage}
                     paginate={paginate}
                     previousPage={previousPage}
                     nextPage={nextPage}
-                  />
+                  /> */}
                 </div>
+                {/* <div className="pb-2">
+                  <Pagination defaultCurrent={currentPage} total={avatars.length} pageSize={avatarsPerPage} />
+                </div> */}
                 <div className="container grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 gap-2 mx-auto">
-                  {avatars.slice(avatarsPerPage * (currentPage - 1), avatarsPerPage * currentPage).map((item, inx) =>
+                  {avatars.slice(avatarsPerPage * currentPage, avatarsPerPage * (currentPage + 1)).map((item, inx) =>
                     <ImageModal
                       key={inx}
                       src={`${item.selected}`}
