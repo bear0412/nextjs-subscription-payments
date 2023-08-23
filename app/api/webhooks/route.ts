@@ -53,38 +53,50 @@
 //   }
 // }
 
-import { PUSHER_APPID, PUSHER_CLUSTER, PUSHER_KEY, PUSHER_SECRET, PUSHER_CHANNEL, PUSHER_EVENT } from "@/config/constant";
+// {
+//   "content": "male red color of an animated hero in a bright outfit, in the style of furaffinity, cosmic, manga-inspired, dark azure and gold, [tyler edlin], superheroes, [shuzo oshimi]",
+//   "imageUrl": "https://cdn.discordapp.com/attachments/1125506214197997629/1143225493148155964/Alikos87_male_red_color_of_an_animated_hero_in_a_bright_outfit__756c4789-639b-47c6-9f09-4d47ae5b9ca0.png",
+//   "imageUrls": [
+//     "https://cdn.midjourney.com/756c4789-639b-47c6-9f09-4d47ae5b9ca0/0_0.png",
+//     "https://cdn.midjourney.com/756c4789-639b-47c6-9f09-4d47ae5b9ca0/0_1.png",
+//     "https://cdn.midjourney.com/756c4789-639b-47c6-9f09-4d47ae5b9ca0/0_2.png",
+//     "https://cdn.midjourney.com/756c4789-639b-47c6-9f09-4d47ae5b9ca0/0_3.png"
+//   ],
+//   "buttons": [
+//     "U1",
+//     "U2",
+//     "U3",
+//     "U4",
+//     "🔄",
+//     "V1",
+//     "V2",
+//     "V3",
+//     "V4"
+//   ],
+//   "createdAt": "2023-08-21T16:49:57.804Z",
+//   "responseAt": "2023-08-21T16:49:58.105Z",
+//   "ref": "",
+//   "description": "",
+//   "accountId": "USX9YqS2eofuJeq44JmV",
+//   "type": "imagine",
+//   "originatingMessageId": "3czRw8DtU3rXFz7MLEGv",
+//   "buttonMessageId": "HPSkKO22KRXungrlYWE3"
+// }
+
+import { PUSHER_APPID, PUSHER_CLUSTER, PUSHER_KEY, PUSHER_SECRET, PUSHER_CHANNEL } from "@/config/constant";
 import Pusher from "pusher";
 
 export async function POST(req: Request) {
   const body = await req.json()
   const pusher = new Pusher({
-    appId: PUSHER_APPID || "",
-    key: PUSHER_KEY || "",
-    secret: PUSHER_SECRET || "",
-    cluster: PUSHER_CLUSTER || "",
+    appId: PUSHER_APPID,
+    key: PUSHER_KEY,
+    secret: PUSHER_SECRET,
+    cluster: PUSHER_CLUSTER,
     useTLS: true
   });
 
-  await pusher.trigger(PUSHER_CHANNEL || "", PUSHER_EVENT || "", body);
-  // console.log("called api/webhooks", req.body)
-  // const { imageUrls, content, originatingMessageId } = req.body as any;
-  // const NextlegReqConfig = {
-  //   method: "get",
-  //   url: `https://api.thenextleg.io/v2/message/${originatingMessageId || "GoNKsRq5Qp2mfqoPynTk"}`,
-  //   headers: {
-  //     'Authorization': `Bearer ${NEXTLEG_TOKEN}`,
-  //     'Content-Type': 'application/json'
-  //   },
-  // }
-  // const response = await axios<any, NextlegRes>(NextlegReqConfig)
-  // console.log("-----------------------", response.response);
-  // setGeneratedAvatar({
-  //   imageUrls,
-  //   content,
-  //   originatingMessageId
-  // });
-  // setGeneratedAvatar({ ...response.response });
+  await pusher.trigger(PUSHER_CHANNEL, body.originatingMessageId, body);
 
   return new Response(JSON.stringify({ received: true }));
 }

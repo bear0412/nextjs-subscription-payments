@@ -1,15 +1,17 @@
-import { Dispatch, SetStateAction } from "react";
-import { Database } from "@/types_db";
-import { Session as SessionType } from "@supabase/gotrue-js/src/lib/types"
+import { Dispatch, SetStateAction } from 'react';
+import { Database } from '@/types_db';
+import { Session as SessionType } from '@supabase/gotrue-js/src/lib/types';
 
 export declare type SetValue<T> = Dispatch<SetStateAction<T>>;
 
 export declare type NextlegResponse = {
   imageUrl: any;
-  imageUrls: string[],
-  originatingMessageId: string,
-  content: string,
-}
+  imageUrls: string[];
+  buttons: string[];
+  buttonMessageId: string;
+  originatingMessageId: string;
+  content: string;
+};
 export type Subscription = Database['public']['Tables']['subscriptions']['Row'];
 export type Product = Database['public']['Tables']['products']['Row'];
 export type Price = Database['public']['Tables']['prices']['Row'];

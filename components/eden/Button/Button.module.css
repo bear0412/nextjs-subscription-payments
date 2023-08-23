@@ -1,0 +1,44 @@
+.root {
+  @apply bg-[#0B0F17] text-xs	text-white cursor-pointer inline-flex px-8 rounded-[5px] border-[1px] border-[#242C3E] leading-6 transition ease-in-out duration-150 shadow-sm font-semibold text-center justify-center uppercase py-2 border border-transparent items-center;
+}
+
+.root:default {
+  @apply bg-[#0B0F17] border-[#242C3E];
+}
+
+.root:hover {
+  @apply bg-[#141c2b] border border-[#44D4A43A];
+}
+
+.root:focus {
+  @apply ring-0;
+}
+
+.root:active {
+  @apply bg-[#44d4a43b] border border-[#44D4A4] ring-0;
+}
+
+.root[data-active] {
+  @apply bg-[#44D4A4];
+}
+
+.loading {
+  @apply bg-[#242C3E] text-white border-white cursor-not-allowed;
+}
+
+.loading:hover {
+  @apply bg-[#242C3E] text-white border-white cursor-not-allowed;
+}
+
+.slim {
+  @apply py-2 transform-none normal-case;
+}
+
+.disabled,
+.disabled:hover {
+  @apply text-white/30 border-white bg-[#242C3E] cursor-not-allowed;
+  filter: grayscale(1);
+  -webkit-transform: translateZ(0);
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
+}

@@ -1,0 +1,11 @@
+.slider-inside {
+  background: linear-gradient(90deg, #44d4a4 0%, #fff 100%);
+}
+
+.dot-animation {
+  transition: left 0.5s ease-in-out;
+}
+
+.slider-animation {
+  transition: width 0.5s ease-in-out;
+}
