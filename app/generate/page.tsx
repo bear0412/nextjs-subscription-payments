@@ -118,8 +118,7 @@ export default function Generate() {
           setImageUrl(imageLink);
         }
       } catch (error) {
-        alert('Error loading user data!')
-        console.log(error);
+        console.error(error);
       } finally {
         toggleAvatarGenerating();
       }
@@ -142,7 +141,7 @@ export default function Generate() {
           }
         )
         setMsgId(originMsgId);
-        console.log(msgId)
+        console.log(originMsgId)
         setGenerateCount(generateCount - 1)
       } catch (e: any) {
         console.log("error", e.message);
@@ -194,7 +193,6 @@ export default function Generate() {
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center ">
-      <>{console.log(currentMsgId)}</>
       {!avatarGenerating ?
         <>
           <div className="flex flex-col	justify-between	col-span-full mt-2 w-[300px]">
