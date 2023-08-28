@@ -73,9 +73,9 @@ export default function Gallery() {
           default:
             break;
         }
-
-        setLoading(false)
       }
+
+      setLoading(false)
     })()
   }, [])
 
